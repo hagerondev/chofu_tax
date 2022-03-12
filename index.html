@@ -276,7 +276,7 @@
 	</div>
 </div>
 <div class="large_box">
-	<h2>社会保険料</h2>
+	<h2>社会保険料(1ヶ月あたり)</h2>
 	<div class="detail">扶養超えたら払う<br>介護保険はスキップ</div>
 	<div class="box">
 		<label class="pay">4月、5月、6月の平均給与：</label>
@@ -507,7 +507,7 @@ document.getElementById("calc").addEventListener("click", function () {
 	if (val("syotoku_syotoku")<=480000) {
 		kokumin_hoken = 0;
 	}
-	all_tax_sum += kokumin_hoken;
+	all_tax_sum += kokumin_hoken*12;
 
 	//最終合計
 	val("all_tax_sum",Math.floor(all_tax_sum))
