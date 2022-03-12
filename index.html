@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>税金計算</title>
+	<style type="text/css">
+		.detail {
+			font-size: 0.8em;
+			margin-left: 50px;
+		}
+
+		.koujo {
+			color: blue;
+		}
+
+		.pay {
+			color: red;
+		}
+
+		.large_box {
+			margin-left: 15px;
+		}
+		.box {
+			font-size: 0.9em;
+			margin: 20px 0;
+			margin-left: 30px;
+		}
+		.b {
+			font-weight: bold;
+		}
+
+		input {
+			display: block;
+			margin-left: 30px;
+		}
+	</style>
+</head>
+<body>
+<div class="inputs">
+	<div>
+		<label>自分の給料：</label>
+		<input type="text" name="main" id="salary" value="10000000">
+		<div class="detail">
+			※控除前の給料、受け取った金額（雑所得、一時所得などは含まない）
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">合計税金額：</label>
+		<input type="text" id="all_tax_sum" value="0">
+		<div class="detail">
+			所得税・復興特別税・住民税（調布）・社会保険料
+		</div>
+	</div>
+	<button id="calc">計算</button>
+</div>
+<div class="large_box">
+	<h2>所得税</h2>
+	<div class="box">
+		<label class="koujo">給与所得控除：</label>
+		<input type="text" id="syotoku_kyuyo_koujo" value="0">
+		<div class="detail">
+			給与に対する控除
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">給与所得：</label>
+		<input type="text" id="syotoku_kyuyo_syotoku" value="0">
+		<div class="detail">
+			控除額適用後
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">合計所得金額：</label>
+		<input type="text" id="syotoku_syotoku" value="0">
+		<div class="detail">
+			他の収入がないため給与所得と同じ
+		</div>
+	</div>
+	<div class="box">
+		<label class="koujo b">所得控除合計：</label>
+		<input type="text" id="syotoku_sum" value="0">
+	</div>
+	<div class="box">
+		<div class="box">
+			<label class="koujo">基礎控除：</label>
+			<input type="text" id="syotoku_kiso" value="480000">
+			<div class="detail">
+				給料が2400万以下の場合
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">勤労学生控除：</label>
+			<input type="text" id="syotoku_kinro" value="270000">
+			<div class="detail">
+				合計所得金額が75万円以下かつ給与所得以外の所得が10万円以下<br>
+				納税者自身が勤労学生であるときは、一定の金額の所得控除を受けることができます。これを勤労学生控除といいます。
+			</div>
+		</div>
+		<!--div class="box">
+			<label class="koujo">雑損控除：</label>
+			<input type="text" id="kinro" value="0">
+			<div class="detail">
+				災害または盗難もしくは横領によって、下記の「雑損控除の対象になる資産の要件」にあてはまる資産について損害を受けた場合等には、一定の金額の所得控除を受けることができます。これを雑損控除といいます。
+			</div>
+		</div-->
+		<div class="box">
+			<label class="koujo">医療費控除：</label>
+			<input type="text" id="syotoku_iryo" value="0">
+			<div class="detail">
+				災害またその年の1月1日から12月31日までの間に自己または自己と生計を一にする配偶者やその他の親族のために医療費を支払った場合において、その支払った医療費が一定額を超えるときは、その医療費の額を基に計算される金額（下記「医療費控除の対象となる金額」参照））の所得控除を受けることができます。これを医療費控除といいます。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">社会保険料控除：</label>
+			<input type="text" id="syotoku_syakaihoken" value="0">
+			<div class="detail">
+				納税者が自己または自己と生計を一にする配偶者やその他の親族の負担すべき社会保険料を支払った場合には、その支払った金額について所得控除を受けることができます。これを社会保険料控除といいます。
+			</div>
+		</div>
+		<!--div class="box">
+			<label class="koujo">小規模企業共済等掛金控除：</label>
+			<input type="text" id="kinro" value="0">
+			<div class="detail">
+				納税者が小規模企業共済法に規定された共済契約に基づく掛金等を支払った場合には、その支払った金額について所得控除が受けられます。これを小規模企業共済等掛金控除といいます。
+			</div>
+		</div-->
+		<div class="box">
+			<label class="koujo">生命保険料控除：</label>
+			<input type="text" id="syotoku_seimeihoken" value="0">
+			<div class="detail">
+				納税者が生命保険料、介護医療保険料および個人年金保険料（コード1141）を支払った場合には、一定の金額の所得控除を受けることができます。これを生命保険料控除といいます。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">生命保険料控除の対象となる保険契約等：</label>
+			<input type="text" id="syotoku_seimeikeiyaku" value="0">
+			<div class="detail">
+				生命保険料控除の対象となる保険契約等には、生命保険契約等、介護医療保険契約等および個人年金保険契約等があります。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">地震保険料控除：</label>
+			<input type="text" id="syotoku_jishinhoken" value="0">
+			<div class="detail">
+				納税者が特定の損害保険契約等に係る地震等損害部分の保険料または掛金を支払った場合には、一定の金額の所得控除を受けることができます。これを地震保険料控除といいます。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">地震保険料控除の対象となる保険契約：</label>
+			<input type="text" id="syotoku_jishinkeiyaku" value="0">
+			<div class="detail">
+				地震保険料控除の対象となる保険や共済の契約は、一定の資産を対象とする契約で、地震等による損害により生じた損失の額をてん補する保険金または共済金が支払われる契約です。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">一定の寄附金を支払ったとき(寄附金控除)：</label>
+			<input type="text" id="syotoku_kifu_1" value="0">
+			<div class="detail">
+				納税者が国や地方公共団体、特定公益増進法人などに対し、「特定寄附金」を支出した場合には、所得控除を受けることができます。これを寄附金控除といいます。なお、政治活動に関する寄附金、認定NPO法人等に対する寄附金および公益社団法人等に対する寄附金のうち一定のものについては、所得控除に代えて、税額控除（コード1260、コード1263、コード1266参照）を選択することができます。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">ふるさと納税(寄附金控除)：</label>
+			<input type="text" id="syotoku_kifu_2" value="0">
+			<div class="detail">
+				ふるさと納税は、ご自身の選んだ自治体に対して寄附を行った場合に、寄附額のうち2,000円を超える部分について、所得税および個人住民税からそれぞれ控除が受けられる制度です。
+			</div>
+		</div>
+		<!--div class="box">
+			<label class="koujo">障害者控除：</label>
+			<input type="text" id="kinro" value="0">
+			<div class="detail">
+				納税者自身、同一生計配偶者または扶養親族が所得税法上の障害者に当てはまる場合には、一定の金額の所得控除を受けることができます。これを障害者控除といいます。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">寡婦控除：</label>
+			<input type="text" id="kinro" value="0">
+			<div class="detail">
+				あなたが寡婦であるときは、一定の金額の所得控除を受けることができます。これを寡婦控除といいます。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">ひとり親控除：</label>
+			<input type="text" id="kinro" value="0">
+			<div class="detail">
+				納税者がひとり親であるときは、一定の金額の所得控除を受けることができます。これをひとり親控除といいます。なお、ひとり親控除は令和2年分の所得税から適用されます。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">寡夫控除：</label>
+			<input type="text" id="kinro" value="0">
+			<div class="detail">
+				納税者がひとり親であるときは、一定の金額の所得控除を受けることができます。これをひとり親控除といいます。なお、ひとり親控除は令和2年分の所得税から適用されます。
+			</div>
+		</div>
+		<div class="box">
+			<label class="koujo">扶養控除：</label>
+			<input type="text" id="kinro" value="0">
+			<div class="detail">
+				納税者に所得税法上の控除対象扶養親族となる人がいる場合には、一定の金額の所得控除が受けられます。これを扶養控除といいます。
+			</div>
+		</div-->
+	</div>
+	<div class="box">
+		<label class="pay">課税所得：</label>
+		<input type="text" id="syotoku_tar" value="0">
+		<div class="detail">
+			課税対象の所得
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">所得税：</label>
+		<input type="text" id="syotoku_tax" value="0">
+		<div class="detail">
+			課税対象の所得
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">復興特別所得税額：</label>
+		<input type="text" id="syotoku_fukko" value="0">
+		<div class="detail">
+			2037年まで
+		</div>
+	</div>
+	<div class="box b">
+		<label class="pay">合計支払い金額：</label>
+		<input type="text" id="syotoku_tax_sum" value="0">
+		<div class="detail">
+			所得税・復興特別税の合計（100円未満切り捨て）
+		</div>
+	</div>
+</div>
+<div class="large_box">
+	<h2>住民税</h2>
+	<div class="detail"></div>
+	<div class="box">
+		<label class="pay">課税対象：</label>
+		<input type="text" id="jumin_tar" value="4000">
+		<div class="detail">
+			調布：3000円、東京：1000円<br>
+			合計所得金額が45万を超えるとかかる
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">均等割額：</label>
+		<input type="text" id="jumin_kinto" value="4000">
+		<div class="detail">
+			調布：3000円、東京：1000円<br>
+			合計所得金額が45万を超えるとかかる
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">所得割率：</label>
+		<input type="text" id="jumin_syotoku_ritu" value="10">
+		<div class="detail">
+			調布：6%、東京：4%
+			<br>
+			合計所得金額が45万を超えるとかかる
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">所得割額：</label>
+		<input type="text" id="jumin_syotoku" value="0">
+		<div class="detail">
+			所得割率による課税額
+		</div>
+	</div>
+	<div class="box b">
+		<label class="pay">住民税合計：</label>
+		<input type="text" id="jumin_tax_sum" value="0">
+		<div class="detail">
+			均等割・所得割の合計
+		</div>
+	</div>
+</div>
+<div class="large_box">
+	<h2>社会保険料</h2>
+	<div class="detail">扶養超えたら払う<br>介護保険はスキップ</div>
+	<div class="box">
+		<label class="pay">4月、5月、6月の平均給与：</label>
+		<input type="text" id="syakai_hosyu" value="-1">
+		<div class="detail">
+			4月、5月、6月の平均給与<br>
+			入力しないと、給料を12で割ったものを参照<br>
+			非常に複雑なため、2日に1日以下のバイト頻度として計算<br>
+			従前の標準報酬月額って何！
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">報酬月額：</label>
+		<input type="text" id="syakai_hyojun" value="0">
+		<div class="detail">
+			対象給与
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">標準報酬月額：</label>
+		<input type="text" id="syakai_hyojun_hosyu" value="0">
+		<div class="detail">
+			保険料の参考になる給与
+		</div>
+	</div>
+	<div class="box">
+		<label class="pay">標準報酬等級：</label>
+		<input type="text" id="syakai_hyojun_rank" value="0">
+		<div class="detail">
+			保険料の参考になる等級
+		</div>
+	</div>
+	<div class="box b">
+		<label class="pay">国民健康保険料：</label>
+		<input type="text" id="syakai_kokumin_hoken" value="0">
+		<div class="detail">
+			個人が負担する半額<br>
+			扶養内だと0円
+		</div>
+	</div>
+	<div class="box b">
+		<label class="pay">厚生年金保険料：</label>
+		<input type="text" id="syakai_kosei_nenkin" value="0">
+		<div class="detail">
+			個人が負担する半額<br>
+			多分学生はなし？
+		</div>
+	</div>
+	<h3>
+		自分の社会保険料を自分の所得控除に回すのではなく、親の所得控除に回したほうが得
+	</h3>
+</div>
+<script type="text/javascript">
+
+function val(id,x="") {
+	var el = document.getElementById(id);
+	if (x==="") {
+		return Number(el.value);
+	}else{
+		el.value = x;
+	}
+}
+
+hoken_tax = [
+	[1,58000,63000,5689.8,2844.9,6641.0,3320.5,16104.00,8052.00],
+	[2,68000,73000,6670.8,3335.4,7786.0,3893.0,16104.00,8052.00],
+	[3,78000,83000,7651.8,3825.9,8931.0,4465.5,16104.00,8052.00],
+	[4,88000,93000,8632.8,4316.4,10076.0,5038.0,16104.00,8052.00],
+	[5,98000,101000,9613.8,4806.9,11221.0,5610.5,17934.00,8967.00],
+	[6,104000,107000,10202.4,5101.2,11908.0,5954.0,19032.00,9516.00],
+	[7,110000,114000,10791.0,5395.5,12595.0,6297.5,20130.00,10065.00],
+	[8,118000,122000,11575.8,5787.9,13511.0,6755.5,21594.00,10797.00],
+	[9,126000,130000,12360.6,6180.3,14427.0,7213.5,23058.00,11529.00],
+	[10,134000,138000,13145.4,6572.7,15343.0,7671.5,24522.00,12261.00],
+	[11,142000,146000,13930.2,6965.1,16259.0,8129.5,25986.00,12993.00],
+	[12,150000,155000,14715.0,7357.5,17175.0,8587.5,27450.00,13725.00],
+	[13,160000,165000,15696.0,7848.0,18320.0,9160.0,29280.00,14640.00],
+	[14,170000,175000,16677.0,8338.5,19465.0,9732.5,31110.00,15555.00],
+	[15,180000,185000,17658.0,8829.0,20610.0,10305.0,32940.00,16470.00],
+	[16,190000,195000,18639.0,9319.5,21755.0,10877.5,34770.00,17385.00],
+	[17,200000,210000,19620.0,9810.0,22900.0,11450.0,36600.00,18300.00],
+	[18,220000,230000,21582.0,10791.0,25190.0,12595.0,40260.00,20130.00],
+	[19,240000,250000,23544.0,11772.0,27480.0,13740.0,43920.00,21960.00],
+	[20,260000,270000,25506.0,12753.0,29770.0,14885.0,47580.00,23790.00],
+	[21,280000,290000,27468.0,13734.0,32060.0,16030.0,51240.00,25620.00],
+	[22,300000,310000,29430.0,14715.0,34350.0,17175.0,54900.00,27450.00],
+	[23,320000,330000,31392.0,15696.0,36640.0,18320.0,58560.00,29280.00],
+	[24,340000,350000,33354.0,16677.0,38930.0,19465.0,62220.00,31110.00],
+	[25,360000,370000,35316.0,17658.0,41220.0,20610.0,65880.00,32940.00],
+	[26,380000,395000,37278.0,18639.0,43510.0,21755.0,69540.00,34770.00],
+	[27,410000,425000,40221.0,20110.5,46945.0,23472.5,75030.00,37515.00],
+	[28,440000,455000,43164.0,21582.0,50380.0,25190.0,80520.00,40260.00],
+	[29,470000,485000,46107.0,23053.5,53815.0,26907.5,86010.00,43005.00],
+	[30,500000,515000,49050.0,24525.0,57250.0,28625.0,91500.00,45750.00],
+	[31,530000,545000,51993.0,25996.5,60685.0,30342.5,96990.00,48495.00],
+	[32,560000,575000,54936.0,27468.0,64120.0,32060.0,102480.00,51240.00],
+	[33,590000,605000,57879.0,28939.5,67555.0,33777.5,107970.00,53985.00],
+	[34,620000,635000,60822.0,30411.0,70990.0,35495.0,113460.00,56730.00],
+	[35,650000,665000,63765.0,31882.5,74425.0,37212.5,118950.00,59475.00],
+	[36,680000,695000,66708.0,33354.0,77860.0,38930.0,118950.00,59475.00],
+	[37,710000,730000,69651.0,34825.5,81295.0,40647.5,118950.00,59475.00],
+	[38,750000,770000,73575.0,36787.5,85875.0,42937.5,118950.00,59475.00],
+	[39,790000,810000,77499.0,38749.5,90455.0,45227.5,118950.00,59475.00],
+	[40,830000,855000,81423.0,40711.5,95035.0,47517.5,118950.00,59475.00],
+	[41,880000,905000,86328.0,43164.0,100760.0,50380.0,118950.00,59475.00],
+	[42,930000,955000,91233.0,45616.5,106485.0,53242.5,118950.00,59475.00],
+	[43,980000,1005000,96138.0,48069.0,112210.0,56105.0,118950.00,59475.00],
+	[44,1030000,1055000,101043.0,50521.5,117935.0,58967.5,118950.00,59475.00],
+	[45,1090000,1115000,106929.0,53464.5,124805.0,62402.5,118950.00,59475.00],
+	[46,1150000,1175000,112815.0,56407.5,131675.0,65837.5,118950.00,59475.00],
+	[47,1210000,1235000,118701.0,59350.5,138545.0,69272.5,118950.00,59475.00],
+	[48,1270000,1295000,124587.0,62293.5,145415.0,72707.5,118950.00,59475.00],
+	[49,1330000,1355000,130473.0,65236.5,152285.0,76142.5,118950.00,59475.00],
+	[50,1390000,100000000000,136359.0,68179.5,159155.0,79577.5,118950.00,59475.00]
+]
+
+document.getElementById("calc").addEventListener("click", function () {
+	const salary = val("salary");
+	console.log("給与",salary)
+	var all_tax_sum = 0;
+
+	//所得税
+	//val("syotoku_kazei",syotoku_kazei)
+
+	//給与所得控除
+	var tar = salary;
+	var ans;
+	if (tar<=1625000) {
+		ans = 550000;
+	}else if(tar<=1800000) {
+		ans = tar*0.4-100000;
+	}else if(tar<=3600000) {
+		ans = tar*0.3+80000
+	}else if(tar<=6600000) {
+		ans = tar*0.2+440000
+	}else if(tar<=8500000) {
+		ans = tar*0.1+1100000
+	}else{
+		ans = 1950000
+	}
+	val("syotoku_kyuyo_koujo",ans)
+	val("syotoku_kyuyo_syotoku",salary-ans)
+	val("syotoku_syotoku",salary-ans);
+
+	var syotoku_koujo = 0;
+	syotoku_koujo += val("syotoku_kiso");
+	if (salary-ans<=750000) {
+		syotoku_koujo += val("syotoku_kinro");
+	}
+	syotoku_koujo += val("syotoku_iryo");
+	syotoku_koujo += val("syotoku_syakaihoken");
+	syotoku_koujo += val("syotoku_seimeihoken");
+	syotoku_koujo += val("syotoku_seimeikeiyaku");
+	syotoku_koujo += val("syotoku_jishinhoken");
+	syotoku_koujo += val("syotoku_jishinkeiyaku");
+	syotoku_koujo += val("syotoku_kifu_1");
+	syotoku_koujo += val("syotoku_kifu_2");
+	val("syotoku_sum",syotoku_koujo)
+
+	var syotoku_kazei = salary-syotoku_koujo
+
+	var tar = salary-ans-syotoku_koujo;
+	val("syotoku_tar",tar)
+	//累進課税
+	var ans;
+	if (tar<=1950000) {
+		ans = tar*0.05;
+	}else if(tar<=3300000) {
+		ans = tar*0.1-97500;
+	}else if(tar<=6950000) {
+		ans = tar*0.2-427500;
+	}else if(tar<=9000000) {
+		ans = tar*0.23-636000;
+	}else if(tar<=18000000) {
+		ans = tar*0.33-1536000;
+	}else if(tar<=40000000) {
+		ans = tar*0.4-2796000;
+	}else{
+		ans = tar*0.45-4796000
+	}
+	val("syotoku_tax",ans)
+	val("syotoku_fukko",Math.floor(ans*0.021))
+	ans = Math.floor((ans+Math.floor(ans*0.021))/100)*100
+	ans = Math.max(0,ans);
+	val("syotoku_tax_sum",ans)
+	all_tax_sum += ans
+
+
+	//住民税
+	var tar = val("syotoku_tar")+50000
+	val("jumin_tar",tar)
+	var syotoku = tar;
+	if (syotoku>450000) {
+		val("jumin_kinto",4000);
+		var ritsu = val("jumin_syotoku_ritu");
+		val("jumin_syotoku",syotoku*ritsu/100);
+	}else{
+		val("jumin_kinto",0);
+		val("jumin_syotoku",0);
+	}
+	var jumin_sum = val("jumin_kinto")+val("jumin_syotoku")
+	val("jumin_tax_sum",jumin_sum)
+	all_tax_sum += jumin_sum;
+
+	//社会保険料
+	var hosyu = val("syakai_hosyu");
+	var ans;
+	if (hosyu==-1) {
+		ans = Math.floor(salary/12);
+	}else{
+		ans = hosyu;
+	}
+	val("syakai_hyojun",ans);
+
+	var tar = ans;
+	var i;
+	for(i=0;i<hoken_tax.length;i++) {
+		if (hoken_tax[i][2]>tar) break;
+	}
+	var rank = hoken_tax[i][0];
+	val("syakai_hyojun_hosyu",hoken_tax[i][1]);
+	val("syakai_hyojun_rank",rank);
+
+	val("syakai_kokumin_hoken",hoken_tax[i][4]);
+	//val("syakai_kosei_nenkin",hoken_tax[i][8]);
+
+	var kokumin_hoken = hoken_tax[i][4];
+	if (val("syotoku_syotoku")<=480000) {
+		kokumin_hoken = 0;
+	}
+	all_tax_sum += kokumin_hoken;
+
+	//最終合計
+	val("all_tax_sum",Math.floor(all_tax_sum))
+})
+</script>
+</body>
+</html>
